@@ -32,3 +32,7 @@ assistant = client.beta.assistants.update(
     tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}}
 )
 print("Assistant Updated with vector store!")
+
+# === Create a Thread === #
+thread = client.beta.threads.create()
+print(f"Your Thread ID is - {thread.id}\n\n")
