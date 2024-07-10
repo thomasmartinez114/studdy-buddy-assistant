@@ -9,17 +9,19 @@ import streamlit as st
 
 load_dotenv()
 
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 client = openai.OpenAI()
 
-model = 'gpt-4-1106-preview'
+model = 'gpt-4o'
 
 # Step 1 - Upload a file to OpenAI embeddings ====
-file_path = './cryptocurrency.pdf'
-file_object = client.files.create(file=open(file_path, "rb"), purpose="assistants")
+filepath = "./files/cryptocurrency.pdf"
+file_object = client.files.create(file=open(filepath, "rb"), purpose="assistants")
 
-# Step 2 - Create an Assistant
+# Step 2 - Create an assistant
 assistant = client.beta.assistants.create(
-    name='Study Buddy',
+    name="Studdy Buddy",
     instructions="""You are a helpful study assistant who knows a lot about understanding research papers.
     Your role is to summarize papers, clarify terminology within context, and extract key figures and data.
     Cross-reference information for additional insights and answer related questions comprehensively.
@@ -29,9 +31,9 @@ assistant = client.beta.assistants.create(
     Adhere to ethical standards, respect intellectual property, and provide users with guidance on any limitations.
     Maintain a feedback loop for continuous improvement and user support.
     Your ultimate goal is to facilitate a deeper understanding of complex scientific material, making it more accessible and comprehensible.""",
-    tools=[{'type': 'retrieval'}],
+    tools=[{"type": "file_search"}],
     model=model,
-    file_ids=[file_object.id]
+    file_ids=[file_object.id],
 )
 
 # === Get the Assistant ID === #
