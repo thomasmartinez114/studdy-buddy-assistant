@@ -36,3 +36,22 @@ print("Assistant Updated with vector store!")
 # === Create a Thread === #
 thread = client.beta.threads.create()
 print(f"Your Thread ID is - {thread.id}\n\n")
+
+# === Run a Loop where user can ask questions === #
+while True:
+    text = input("What's your question?\n")
+
+    message = client.beta.threads.messages.create(
+        thread_id=thread.id,
+        role="user",
+        content=text,
+    )
+
+    run = client.beta.threads.runs.create_and_poll(
+        thread_id=thread.id, assistant_id=assistant.id
+    )
+
+    messages = list(client.beta.threads.messages.list(thread_id=thread.id, run_id=run.id))
+    message_content = messages[0].content[0].text
+    print("Response: \n")
+    print(f"{message_content.value}\n")
